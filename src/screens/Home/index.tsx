@@ -1,8 +1,9 @@
 import { View, Text, Pressable, StyleSheet} from 'react-native'
 import React from 'react'
 import Agenda from '../../components/Agenda';
+import { Image } from 'react-native';
 
-export default function index() {
+export default function Home() {
   return (
     <>
       <View style={styles.container}>
@@ -10,15 +11,15 @@ export default function index() {
 
           <View style={styles.buttonConteiner}>
             <Pressable style={styles.button}>
-              <Text>Graficos</Text>
+              <Image source={require('../../source/icons/table.png')} style={{width: 70, height: 70}}/>{/* Graphic screnn */}
             </Pressable>
 
             <Pressable style={styles.button}>
-              <Text>Amanentear</Text>
+              <Image source={require('../../source/icons/breastfeeding.png')} style={{width: 70, height: 70}}/>{/* Breastfeeding screnn */}
             </Pressable>
 
             <Pressable style={styles.button}>
-              <Text>Meu bebe</Text>
+              <Image source={require('../../source/icons/baby-line.png')} style={{width: 70, height: 70}}/>{/* MyBaby screnn */}
             </Pressable>
           </View>
 
@@ -67,13 +68,15 @@ const styles = StyleSheet.create({
 
     padding: 20,
     margin: 5,
+    width: 100,
+    height: 100,
 
     alignItems: 'center',
     justifyContent: 'center'
   },
 
   buttonUtilidadesConteiner:{
-    margin: 10,
+    marginTop: 10,
   },
 
   buttonUtilidades:{
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     
 
-    height: 60,
+    height: 40,
     width: 350,
     margin: 5,
 
