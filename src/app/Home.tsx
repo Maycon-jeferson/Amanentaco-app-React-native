@@ -1,7 +1,8 @@
 import { View, Text, Pressable, StyleSheet} from 'react-native'
 import React from 'react'
-import Agenda from '../../components/Agenda';
+import Agenda from '../components/Agenda';
 import { Image } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function Home() {
   return (
@@ -11,29 +12,36 @@ export default function Home() {
 
           <View style={styles.buttonConteiner}>
             <Pressable style={styles.button}>
-              <Image source={require('../../source/icons/table.png')} style={{width: 70, height: 70}}/>{/* Graphic screnn */}
+              <Link href={"/Table"} style={styles.linkbutton}>
+                <Image source={require('../source/icons/table.png')} style={{width: 40, height: 40}}/>{/* Table screnn */}
+              </Link>
             </Pressable>
 
             <Pressable style={styles.button}>
-              <Image source={require('../../source/icons/breastfeeding.png')} style={{width: 70, height: 70}}/>{/* Breastfeeding screnn */}
+              <Link href={"/Breastfeeding"} style={styles.linkbutton}>
+                <Image source={require('../source/icons/breastfeeding.png')} style={{width: 70, height: 70}}/>{/* Breastfeeding screnn */}
+              </Link>
             </Pressable>
 
             <Pressable style={styles.button}>
-              <Image source={require('../../source/icons/baby-line.png')} style={{width: 70, height: 70}}/>{/* MyBaby screnn */}
+              <Link href={"/Baby"} style={styles.linkbutton}>
+                <Image source={require('../source/icons/baby-line.png')} style={{width: 40, height: 40}}/>{/* Baby screnn */}
+              </Link>
             </Pressable>
           </View>
 
           <View style={styles.buttonUtilidadesConteiner}>
+            
             <Pressable style={styles.buttonUtilidades}>
-              <Text>fraldas</Text>
+              <Link href={"/Fraudas"} style={styles.link}>fraldas</Link>
             </Pressable>
 
             <Pressable style={styles.buttonUtilidades}>
-              <Text>Mamadeiras</Text>
+              <Link href={"/Mamadeira"} style={styles.link}>Mamadeiras</Link>
             </Pressable>
 
             <Pressable style={styles.buttonUtilidades}>
-              <Text>sono</Text>
+              <Link href={"/Sono"} style={styles.link}>Sono</Link>
             </Pressable>
           </View>
       </View>
@@ -47,36 +55,36 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 60,
+    marginTop: 30,
   },
 
   tittle: {
     textAlign: 'center',
     fontSize: 40,
     marginBottom: 10,
+    backgroundColor: '#400'
   },
 
   buttonConteiner: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-evenly'
   },
 
   button: {
-    backgroundColor: '#b82bb8',
-    borderRadius: 50,
-
-    padding: 20,
-    margin: 5,
-    width: 100,
-    height: 100,
+    padding: 5,
 
     alignItems: 'center',
     justifyContent: 'center'
   },
 
+  linkbutton:{
+    display: 'flex',
+    height: 100,
+  },
+
   buttonUtilidadesConteiner:{
-    marginTop: 10,
+    marginTop: 5,
   },
 
   buttonUtilidades:{
@@ -88,7 +96,12 @@ const styles = StyleSheet.create({
     width: 350,
     margin: 5,
 
-    alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  link:{
+    width: '100%',
+    
+    textAlign: 'center'
   }
 });

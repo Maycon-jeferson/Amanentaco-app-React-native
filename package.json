@@ -1,7 +1,8 @@
 {
   "name": "breastfeed",
   "version": "1.0.0",
-  "main": "expo/AppEntry.js",
+  "main": "expo-router/entry",
+  "scheme": "breastfeed",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
