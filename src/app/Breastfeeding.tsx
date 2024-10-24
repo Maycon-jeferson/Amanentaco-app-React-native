@@ -1,13 +1,11 @@
 import { View, Text, Pressable, StyleSheet, Button, Touchable, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import Timer from '../components/Timer'
+import CountdownTimer from '../components/CountdownTimer'
 
 export default function BreastFeeding() {
-  const [isRunning, setIsRunning] = useState(false);
 
-  const alternarTimer = () => {
-    setIsRunning(!isRunning)
-  } 
+  const [savedTime, setSavedTime] = useState<number | null>(null);  // Estado elevado
 
   return (
 
@@ -30,23 +28,22 @@ export default function BreastFeeding() {
       </View>
 
       <View style={styles.timerDirection}>
-        <Timer isRunning={isRunning} />
-        <TouchableOpacity style={styles.button} onPress={alternarTimer}>
-          <Text>paly</Text>
-        </TouchableOpacity>
+      <Timer onSaveTime={setSavedTime} />
       </View>
 
       <View >
         <Pressable style={styles.areaText}>
           <Text> Timer since last feed</Text>
-          <Text>00:00:00</Text>
+          <Text>{savedTime !== null && (
+        <Text>{savedTime}s</Text>
+        )}</Text>
         </Pressable>
       </View>
 
       
       <View style={styles.areaText}>
         <Text>Next feed is due</Text>
-        <Text>Date</Text>
+        <CountdownTimer />
       </View>
 
     </View>
