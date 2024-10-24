@@ -1,7 +1,14 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, Pressable, StyleSheet, Button, Touchable, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import Timer from '../components/Timer'
 
 export default function BreastFeeding() {
+  const [isRunning, setIsRunning] = useState(false);
+
+  const alternarTimer = () => {
+    setIsRunning(!isRunning)
+  } 
+
   return (
 
     <View style={styles.conteiner}>
@@ -23,8 +30,10 @@ export default function BreastFeeding() {
       </View>
 
       <View style={styles.timerDirection}>
-        <Text>Play</Text>
-        <Text>00:00:00</Text>
+        <Timer isRunning={isRunning} />
+        <TouchableOpacity style={styles.button} onPress={alternarTimer}>
+          <Text>paly</Text>
+        </TouchableOpacity>
       </View>
 
       <View >
@@ -105,5 +114,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#400',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+
+  button:{
+    backgroundColor: '#fff'
   }
 })
