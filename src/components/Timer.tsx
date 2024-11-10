@@ -1,4 +1,4 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 
 type TimerProps = {
@@ -37,11 +37,21 @@ const Timer: React.FC<TimerProps> = ({ onSaveTime }) => {
 
   return (
     <View>
-      <Text>{seconds}s</Text>
-      <Button title={isRunning ? 'Parar' : 'Iniciar'} onPress={toggleTimer} />
+      <Text style={styles.text}>{seconds}s</Text>
+      <Pressable onPress={toggleTimer}>
+        <Text style={styles.text}>{isRunning ? 'Parar' : 'Iniciar'}</Text>
+      </Pressable>
       <Text></Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  text : {
+    color: '#fff'
+  }
+
+
+})
 
 export default Timer;

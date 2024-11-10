@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 
 const CountdownTimer = () => {
@@ -45,13 +45,13 @@ const CountdownTimer = () => {
         {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}
       </Text>
       <View style={styles.buttonContainer}>
-        <Button title="Adicionar 10 min" onPress={addTime} />
+        <Pressable onPress={addTime}><Text style={styles.text}>Adicionar 10 min</Text></Pressable>
       </View>
       {seconds > 0 && !isRunning && (
-        <Button title="Iniciar" onPress={startTimer} />
+        <Pressable onPress={startTimer}><Text style={styles.text}>Iniciar</Text></Pressable>
       )}
       {isRunning && (
-        <Button title="Parar e Zerar" onPress={stopAndResetTimer} />
+        <Pressable onPress={stopAndResetTimer}><Text style={styles.text}>Parar e Zerar</Text></Pressable>
       )}
     </View>
   );
@@ -62,12 +62,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timerText: {
+    color: '#fff',
     fontSize: 15,
     margin: -10,
   },
   buttonContainer: {
     marginVertical: 10,
   },
+
+  text:{
+   color: '#fff' 
+  }
 });
 
 export default CountdownTimer;

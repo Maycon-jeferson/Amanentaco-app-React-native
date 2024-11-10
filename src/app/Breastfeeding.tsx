@@ -12,18 +12,18 @@ export default function BreastFeeding() {
     <View style={styles.conteiner}>
 
       <View style={styles.perfil}>
-        <Text style={{justifyContent: 'flex-end', fontSize: 30}}>Baby</Text>
-        <Text style={{justifyContent: 'flex-end', margin: 5}}>Idade</Text>
-        <Text style={{position: 'absolute', left: 280, backgroundColor: '#f8f', width: 60, height: 60, margin: 10 }}>Image</Text>
+        <Text style={{justifyContent: 'flex-end', fontSize: 30, color: '#fff'}}>Baby</Text>
+        <Text style={{justifyContent: 'flex-end', margin: 5, color: '#fff'}}>Idade</Text>
+        <Text style={{position: 'absolute', left: 280, backgroundColor: '#f8f', width: 60, height: 60, margin: 10, color: '#fff' }}>Image</Text>
       </View>
 
       <View style={styles.lrDirection}>
         <Pressable style={styles.lrDirectionBlock}>
-          <Text>L</Text>
+          <Text style={styles.text}>L</Text>
         </Pressable>
 
         <Pressable style={styles.lrDirectionBlock}>
-          <Text>R</Text>
+          <Text style={styles.text}>R</Text>
         </Pressable>
       </View>
 
@@ -33,8 +33,8 @@ export default function BreastFeeding() {
 
       <View >
         <Pressable style={styles.areaText}>
-          <Text> Timer since last feed</Text>
-          <Text>{savedTime !== null && (
+          <Text style={styles.text}> Timer since last feed</Text>
+          <Text style={styles.text}>{savedTime !== null && (
         <Text>{savedTime}s</Text>
         )}</Text>
         </Pressable>
@@ -42,7 +42,7 @@ export default function BreastFeeding() {
 
       
       <View style={styles.areaText}>
-        <Text>Next feed is due</Text>
+        <Text style={styles.text}>Next feed is due</Text>
         <CountdownTimer />
       </View>
 
@@ -115,5 +115,9 @@ const styles = StyleSheet.create({
 
   button:{
     backgroundColor: '#fff'
+  },
+
+  text: {
+    color: '#fff'
   }
 })
