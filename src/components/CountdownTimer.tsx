@@ -1,12 +1,12 @@
-import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
+import { colors } from '../theme';
 
 const CountdownTimer = () => {
-  const [seconds, setSeconds] = useState<number>(0); // Tempo inicial em segundos
+  const [seconds, setSeconds] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervaloRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Efeito para gerenciar o temporizador
   useEffect(() => {
     if (isRunning && seconds > 0) {
       intervaloRef.current = setInterval(() => {
@@ -26,33 +26,42 @@ const CountdownTimer = () => {
     };
   }, [isRunning, seconds]);
 
-  const addTime = () => {
-    setSeconds(prev => prev + 600); // Adiciona 10 minutos (600 segundos)
-  };
-
-  const startTimer = () => {
-    setIsRunning(true);
-  };
-
+  const addTime = () => setSeconds(prev => prev + 600);
+  const startTimer = () => setIsRunning(true);
   const stopAndResetTimer = () => {
     setIsRunning(false);
-    setSeconds(0); // Reseta o timer para 0
+    setSeconds(0);
   };
+
+  const displayTime = `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.timerText}>
-        {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}
-      </Text>
-      <View style={styles.buttonContainer}>
-        <Pressable onPress={addTime}><Text style={styles.text}>Adicionar 10 min</Text></Pressable>
+      <Text style={styles.timerText}>{displayTime}</Text>
+      <View style={styles.buttonRow}>
+        <Pressable
+          onPress={addTime}
+          style={({ pressed }) => [styles.smallButton, pressed && styles.buttonPressed]}
+        >
+          <Text style={styles.smallButtonText}>+ 10 min</Text>
+        </Pressable>
+        {seconds > 0 && !isRunning && (
+          <Pressable
+            onPress={startTimer}
+            style={({ pressed }) => [styles.smallButton, styles.buttonStart, pressed && styles.buttonPressed]}
+          >
+            <Text style={styles.primaryButtonText}>Iniciar</Text>
+          </Pressable>
+        )}
+        {isRunning && (
+          <Pressable
+            onPress={stopAndResetTimer}
+            style={({ pressed }) => [styles.smallButton, styles.buttonStop, pressed && styles.buttonPressed]}
+          >
+            <Text style={styles.primaryButtonText}>Parar e zerar</Text>
+          </Pressable>
+        )}
       </View>
-      {seconds > 0 && !isRunning && (
-        <Pressable onPress={startTimer}><Text style={styles.text}>Iniciar</Text></Pressable>
-      )}
-      {isRunning && (
-        <Pressable onPress={stopAndResetTimer}><Text style={styles.text}>Parar e Zerar</Text></Pressable>
-      )}
     </View>
   );
 };
@@ -62,17 +71,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timerText: {
-    color: '#fff',
-    fontSize: 15,
-    margin: -10,
+    fontSize: 24,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 10,
+    fontVariant: ['tabular-nums'],
   },
-  buttonContainer: {
-    marginVertical: 10,
+  buttonRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
   },
-
-  text:{
-   color: '#fff' 
-  }
+  smallButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...(Platform.OS === 'android' && { elevation: 1 }),
+  },
+  buttonStart: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  buttonStop: {
+    backgroundColor: colors.error,
+    borderColor: colors.error,
+  },
+  buttonPressed: {
+    opacity: 0.9,
+  },
+  smallButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  primaryButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textOnPrimary,
+  },
 });
 
 export default CountdownTimer;

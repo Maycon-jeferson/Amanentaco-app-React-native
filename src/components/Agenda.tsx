@@ -1,29 +1,34 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { colors } from '../theme';
 
 const Agenda = () => {
   return (
     <View style={styles.container}>
-      <Calendar 
-        onDayPress={(day: any) => {
+      <Calendar
+        onDayPress={(day: { dateString: string }) => {
           console.log('Selected day: ', day);
         }}
         markedDates={{
-          '2024-09-15': { selected: true, marked: true, selectedColor: '#C8A2C8' },
+          '2024-09-15': { selected: true, marked: true, selectedColor: colors.primary },
           '2024-09-16': { marked: true },
-          '2024-09-17': { marked: true, dotColor: '#C8A2C8', activeOpacity: 0 },
+          '2024-09-17': { marked: true, dotColor: colors.accent, activeOpacity: 0 },
         }}
         theme={{
-          selectedDayBackgroundColor: '#b82bb8',
-          todayTextColor: '#b82bb8',
-          arrowColor: '#b82bb8',
-          monthTextColor: '#b82bb8',
-          indicatorColor: '#b82bb8',
-          textSectionTitleColor: '#b82bb8',
+          backgroundColor: colors.surface,
+          calendarBackground: colors.surface,
+          selectedDayBackgroundColor: colors.primary,
+          selectedDayTextColor: colors.textOnPrimary,
+          todayTextColor: colors.primary,
+          arrowColor: colors.primary,
+          monthTextColor: colors.text,
+          textSectionTitleColor: colors.textSecondary,
+          textDayHeaderFontWeight: '600',
+          textDayFontSize: 16,
+          textMonthFontSize: 18,
+          textMonthFontWeight: '700',
         }}
-
         style={styles.calendar}
       />
     </View>
@@ -32,18 +37,19 @@ const Agenda = () => {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    width: 350,
-    
-    marginBottom: 50
-
+    width: '100%',
+    maxWidth: 360,
+    marginBottom: 50,
+    paddingHorizontal: 16,
   },
-
   calendar: {
-    padding: 10,
-    backgroundColor: '#F3E5F5',
-    borderRadius: 10, 
-  }
+    padding: 14,
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...(Platform.OS === 'android' && { elevation: 2 }),
+  },
 });
 
 export default Agenda;

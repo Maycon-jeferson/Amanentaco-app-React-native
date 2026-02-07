@@ -1,123 +1,186 @@
-import { View, Text, Pressable, StyleSheet, Button, Touchable, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import Timer from '../components/Timer'
-import CountdownTimer from '../components/CountdownTimer'
+import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
+import React, { useState } from 'react';
+import Timer from '../components/Timer';
+import CountdownTimer from '../components/CountdownTimer';
+import { colors } from '../theme';
+
+const cardShadow = Platform.select({
+  ios: {
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+  },
+  android: { elevation: 3 },
+});
 
 export default function BreastFeeding() {
-
-  const [savedTime, setSavedTime] = useState<number | null>(null);  // Estado elevado
+  const [savedTime, setSavedTime] = useState<number | null>(null);
 
   return (
-
-    <View style={styles.conteiner}>
-
-      <View style={styles.perfil}>
-        <Text style={{justifyContent: 'flex-end', fontSize: 30, color: '#fff'}}>Baby</Text>
-        <Text style={{justifyContent: 'flex-end', margin: 5, color: '#fff'}}>Idade</Text>
-        <Text style={{position: 'absolute', left: 280, backgroundColor: '#f8f', width: 60, height: 60, margin: 10, color: '#fff' }}>Image</Text>
+    <View style={styles.container}>
+      <View style={[styles.perfil, cardShadow]}>
+        <Text style={styles.perfilNome}>Baby</Text>
+        <Text style={styles.perfilIdade}>Idade</Text>
+        <View style={styles.perfilAvatar}>
+          <Text style={styles.perfilAvatarText}>Foto</Text>
+        </View>
       </View>
 
+      <Text style={styles.sectionLabel}>Selecione o seio</Text>
       <View style={styles.lrDirection}>
-        <Pressable style={styles.lrDirectionBlock}>
-          <Text style={styles.text}>L</Text>
+        <Pressable style={({ pressed }) => [styles.lrBlock, cardShadow, pressed && styles.lrBlockPressed]}>
+          <Text style={styles.lrText}>L</Text>
+          <Text style={styles.lrSubtext}>Esquerdo</Text>
         </Pressable>
 
-        <Pressable style={styles.lrDirectionBlock}>
-          <Text style={styles.text}>R</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.timerDirection}>
-      <Timer onSaveTime={setSavedTime} />
-      </View>
-
-      <View >
-        <Pressable style={styles.areaText}>
-          <Text style={styles.text}> Timer since last feed</Text>
-          <Text style={styles.text}>{savedTime !== null && (
-        <Text>{savedTime}s</Text>
-        )}</Text>
+        <Pressable style={({ pressed }) => [styles.lrBlock, cardShadow, pressed && styles.lrBlockPressed]}>
+          <Text style={styles.lrText}>R</Text>
+          <Text style={styles.lrSubtext}>Direito</Text>
         </Pressable>
       </View>
 
-      
-      <View style={styles.areaText}>
-        <Text style={styles.text}>Next feed is due</Text>
+      <View style={[styles.timerSection, cardShadow]}>
+        <Timer onSaveTime={setSavedTime} />
+      </View>
+
+      <View style={[styles.areaCard, cardShadow]}>
+        <Text style={styles.areaLabel}>Tempo da última mamada</Text>
+        <Text style={styles.areaValue}>
+          {savedTime !== null ? `${savedTime}s` : '—'}
+        </Text>
+      </View>
+
+      <View style={[styles.areaCard, cardShadow]}>
+        <Text style={styles.areaLabel}>Próxima mamada em</Text>
         <CountdownTimer />
       </View>
-
     </View>
-    
-    
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  conteiner: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginTop: 20,
-    marginHorizontal: 2,
-  },
-  
-  perfil:{
-    flexDirection: 'column',
-    margin: 10,
-    height: 80,
-    
-
-    backgroundColor: '#400',
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    paddingTop: 24,
+    paddingHorizontal: 16,
   },
 
-  perfilBlock:{
-    justifyContent: 'flex-end',
-    margin: 5
-  },
-
-  lrDirection:{
+  perfil: {
     flexDirection: 'row',
-    marginHorizontal: 10,
-    marginTop: 10,
-    height: 400,
-
-    backgroundColor: '#900',
-
-    justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: colors.primary,
+    borderRadius: 16,
   },
 
-  lrDirectionBlock:{
-    width: '45%',
-    height: '90%',
-    backgroundColor: '#700'
+  perfilNome: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: colors.textOnPrimary,
   },
 
-  timerDirection:{
+  perfilIdade: {
+    fontSize: 14,
+    color: colors.textOnPrimary,
+    opacity: 0.9,
+    marginLeft: 12,
+    marginTop: 2,
+  },
+
+  perfilAvatar: {
+    position: 'absolute',
+    right: 12,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: colors.primaryDark,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  perfilAvatarText: {
+    fontSize: 12,
+    color: colors.textOnPrimary,
+    opacity: 0.9,
+  },
+
+  sectionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    marginBottom: 10,
+  },
+
+  lrDirection: {
     flexDirection: 'row',
-    margin: 10,
-    height: 50,
+    marginBottom: 20,
+    gap: 12,
+    height: 140,
+  },
 
-    backgroundColor: '#400',
+  lrBlock: {
+    flex: 1,
+    backgroundColor: colors.accentLight,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: colors.accent,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
   },
 
-  areaText:{
-    flexDirection: 'column',
-    margin: 10,
-    height: 70,
+  lrBlockPressed: {
+    opacity: 0.9,
+  },
 
-    backgroundColor: '#400',
+  lrText: {
+    fontSize: 36,
+    fontWeight: '800',
+    color: colors.primaryDark,
+  },
+
+  lrSubtext: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 4,
+  },
+
+  timerSection: {
+    marginBottom: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
   },
 
-  button:{
-    backgroundColor: '#fff'
+  areaCard: {
+    marginBottom: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  text: {
-    color: '#fff'
-  }
-})
+  areaLabel: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 6,
+  },
+
+  areaValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.text,
+  },
+});

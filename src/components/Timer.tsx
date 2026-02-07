@@ -1,8 +1,9 @@
-import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
+import { colors } from '../theme';
 
 type TimerProps = {
-  onSaveTime: (time: number) => void;  // Função de callback passada via prop
+  onSaveTime: (time: number) => void;
 };
 
 const Timer: React.FC<TimerProps> = ({ onSaveTime }) => {
@@ -29,29 +30,71 @@ const Timer: React.FC<TimerProps> = ({ onSaveTime }) => {
 
   const toggleTimer = () => {
     if (isRunning) {
-      onSaveTime(seconds);  // Salva o tempo no componente pai
-      setSeconds(0);        // Reseta o timer
+      onSaveTime(seconds);
+      setSeconds(0);
     }
-    setIsRunning(prevState => !prevState); // Alterna o estado de "isRunning"
+    setIsRunning(prevState => !prevState);
+  };
+
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
   };
 
   return (
-    <View>
-      <Text style={styles.text}>{seconds}s</Text>
-      <Pressable onPress={toggleTimer}>
-        <Text style={styles.text}>{isRunning ? 'Parar' : 'Iniciar'}</Text>
+    <View style={styles.container}>
+      <Text style={styles.timeText}>{formatTime(seconds)}</Text>
+      <Pressable
+        onPress={toggleTimer}
+        style={({ pressed }) => [
+          styles.button,
+          isRunning ? styles.buttonStop : styles.buttonStart,
+          pressed && styles.buttonPressed,
+        ]}
+      >
+        <Text style={styles.buttonText}>
+          {isRunning ? 'Parar' : 'Iniciar'}
+        </Text>
       </Pressable>
-      <Text></Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  text : {
-    color: '#fff'
-  }
-
-
-})
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timeText: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 14,
+    fontVariant: ['tabular-nums'],
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    minWidth: 120,
+    alignItems: 'center',
+    ...(Platform.OS === 'android' && { elevation: 2 }),
+  },
+  buttonStart: {
+    backgroundColor: colors.primary,
+  },
+  buttonStop: {
+    backgroundColor: colors.error,
+  },
+  buttonPressed: {
+    opacity: 0.9,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textOnPrimary,
+  },
+});
 
 export default Timer;
