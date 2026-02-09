@@ -41,12 +41,13 @@ export default function Home() {
   ];
 
   return (
-    <>
-      <View style={styles.container}>
-        <Text style={styles.title}>Hora da Ação</Text>
+    <View style={styles.pageWrap}>
+      <ScrollView style={styles.scrollWrap} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Hora da Ação</Text>
 
-        {/* BOTÕES PRINCIPAIS */}
-        <View style={styles.buttonContainer}>
+          {/* BOTÕES PRINCIPAIS */}
+          <View style={styles.buttonContainer}>
           <Link href="/Table" asChild>
             <Pressable style={({ pressed }) => [styles.mainButton, cardShadow, pressed && styles.mainButtonPressed]}>
               <View style={styles.linkButton}>
@@ -61,6 +62,7 @@ export default function Home() {
             <Pressable
               style={({ pressed }) => [
                 styles.mainButton,
+                styles.mainButtonCenterSize,
                 cardShadow,
                 (pressed || breastfeedingPressed) && styles.mainButtonCenter,
                 pressed && styles.mainButtonPressed,
@@ -69,7 +71,7 @@ export default function Home() {
               onPressOut={() => setBreastfeedingPressed(false)}
             >
               <View style={styles.linkButton}>
-                <View style={[styles.iconCircle, (breastfeedingPressed) && styles.iconCircleAccent]}>
+                <View style={[styles.iconCircleCenter, (breastfeedingPressed) && styles.iconCircleAccent]}>
                   <Image
                     source={require('../source/icons/breastfeeding.png')}
                     style={styles.centerIcon}
@@ -120,14 +122,57 @@ export default function Home() {
         </View>
       </View>
 
-      <Agenda />
-    </>
+        <View style={styles.agendaWrap}>
+          <Agenda />
+        </View>
+      </ScrollView>
+
+      {/* RODAPÉ - réplica dos botões principais */}
+      <View style={[styles.rodape, cardShadow]}>
+        <Link href="/Table" asChild>
+          <Pressable style={({ pressed }) => [styles.rodapeBtn, pressed && styles.rodapeBtnPressed]}>
+            <View style={styles.rodapeIconCircle}>
+              <Image source={require('../source/icons/table.png')} style={styles.rodapeIcon} />
+            </View>
+          </Pressable>
+        </Link>
+        <Link href="/Breastfeeding" asChild>
+          <Pressable style={({ pressed }) => [styles.rodapeBtn, (pressed || breastfeedingPressed) && styles.rodapeBtnCenter, pressed && styles.rodapeBtnPressed]} onPressIn={() => setBreastfeedingPressed(true)} onPressOut={() => setBreastfeedingPressed(false)}>
+            <View style={[styles.rodapeIconCircle, breastfeedingPressed && styles.iconCircleAccent]}>
+              <Image source={require('../source/icons/breastfeeding.png')} style={styles.rodapeIconCenter} />
+            </View>
+          </Pressable>
+        </Link>
+        <Link href="/Baby" asChild>
+          <Pressable style={({ pressed }) => [styles.rodapeBtn, pressed && styles.rodapeBtnPressed]}>
+            <View style={styles.rodapeIconCircle}>
+              <Image source={require('../source/icons/baby-line.png')} style={styles.rodapeIcon} />
+            </View>
+          </Pressable>
+        </Link>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  pageWrap: {
     flex: 1,
+  },
+  scrollWrap: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 24,
+  },
+  agendaWrap: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 70,
+    paddingHorizontal: 20,
+  },
+  container: {
     marginTop: 40,
     paddingHorizontal: 20,
     alignItems: 'center',
@@ -159,6 +204,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  mainButtonCenterSize: {
+    minWidth: 110,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
   mainButtonCenter: {
     backgroundColor: colors.accentLight,
     borderWidth: 2,
@@ -175,9 +225,18 @@ const styles = StyleSheet.create({
   },
 
   iconCircle: {
-    width: 92,
-    height: 92,
+    width: 90,
+    height: 90,
     borderRadius: 32,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  iconCircleCenter: {
+    width: 120,
+    height: 120,
+    borderRadius: 56,
     backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
@@ -193,14 +252,14 @@ const styles = StyleSheet.create({
   },
 
   centerIcon: {
-    width: 44,
-    height: 44,
+    width: 56,
+    height: 56,
   },
 
   /* CARROSSEL */
   utilidadesContainer: {
     width: '100%',
-    marginTop: 16,
+    marginTop: 30,
   },
 
   carouselContent: {
@@ -247,5 +306,46 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
     marginTop: 4,
+  },
+
+  /* RODAPÉ - réplica dos botões principais */
+  rodape: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+  },
+  rodapeBtn: {
+    padding: 6,
+    borderRadius: 20,
+  },
+  rodapeBtnPressed: {
+    opacity: 0.85,
+  },
+  rodapeBtnCenter: {
+    backgroundColor: colors.accentLight,
+    borderWidth: 2,
+    borderColor: colors.accent,
+  },
+  rodapeIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rodapeIcon: {
+    width: 26,
+    height: 26,
+  },
+  rodapeIconCenter: {
+    width: 32,
+    height: 32,
   },
 });
