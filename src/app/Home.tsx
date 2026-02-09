@@ -1,8 +1,20 @@
-import { View, Text, Pressable, StyleSheet, Image, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  Image,
+  Platform,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
 import React, { useState } from 'react';
 import Agenda from '../components/Agenda';
 import { Link } from 'expo-router';
 import { colors } from '../theme';
+
+const CARD_WIDTH = 120;
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const cardShadow = Platform.select({
   ios: {
@@ -22,11 +34,14 @@ export default function Home() {
       <View style={styles.container}>
         <Text style={styles.title}>Hora da Ação</Text>
 
+        {/* BOTÕES PRINCIPAIS */}
         <View style={styles.buttonContainer}>
           <Pressable style={({ pressed }) => [styles.mainButton, cardShadow, pressed && styles.mainButtonPressed]}>
-            <Link href="/Table" style={styles.linkButton}>
-              <View style={styles.iconCircle}>
-                <Image source={require('../source/icons/table.png')} style={styles.mainIcon} />
+            <Link href="/Table" asChild>
+              <View style={styles.linkButton}>
+                <View style={styles.iconCircle}>
+                  <Image source={require('../source/icons/table.png')} style={styles.mainIcon} />
+                </View>
               </View>
             </Link>
           </Pressable>
@@ -41,48 +56,59 @@ export default function Home() {
             onPressIn={() => setBreastfeedingPressed(true)}
             onPressOut={() => setBreastfeedingPressed(false)}
           >
-            <Link href="/Breastfeeding" style={styles.linkButton}>
-              <View style={[styles.iconCircle, breastfeedingPressed && styles.iconCircleAccent]}>
-                <Image source={require('../source/icons/breastfeeding.png')} style={styles.centerIcon} />
+            <Link href="/Breastfeeding" asChild>
+              <View style={styles.linkButton}>
+                <View style={[styles.iconCircle, breastfeedingPressed && styles.iconCircleAccent]}>
+                  <Image
+                    source={require('../source/icons/breastfeeding.png')}
+                    style={styles.centerIcon}
+                  />
+                </View>
               </View>
             </Link>
           </Pressable>
 
           <Pressable style={({ pressed }) => [styles.mainButton, cardShadow, pressed && styles.mainButtonPressed]}>
-            <Link href="/Baby" style={styles.linkButton}>
-              <View style={styles.iconCircle}>
-                <Image source={require('../source/icons/baby-line.png')} style={styles.mainIcon} />
+            <Link href="/Baby" asChild>
+              <View style={styles.linkButton}>
+                <View style={styles.iconCircle}>
+                  <Image source={require('../source/icons/baby-line.png')} style={styles.mainIcon} />
+                </View>
               </View>
             </Link>
           </Pressable>
         </View>
 
+        {/* CARROSSEL */}
         <View style={styles.utilidadesContainer}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.carouselContent}
           >
-            <Pressable style={({ pressed }) => [styles.carouselCard, cardShadow, pressed && styles.utilButtonPressed]}>
-              <Link href="/Fraudas" style={styles.carouselLink}>
-                <Text style={styles.carouselTitle}>Fraldas</Text>
-                <Text style={styles.carouselPlaceholder}>Salvo por último</Text>
-              </Link>
-            </Pressable>
-
-            <Pressable style={({ pressed }) => [styles.carouselCard, cardShadow, pressed && styles.utilButtonPressed]}>
-              <Link href="/Mamadeira" style={styles.carouselLink}>
-                <Text style={styles.carouselTitle}>Mamadeiras</Text>
-                <Text style={styles.carouselPlaceholder}>Salvo por último</Text>
-              </Link>
-            </Pressable>
-
-            <Pressable style={({ pressed }) => [styles.carouselCard, cardShadow, pressed && styles.utilButtonPressed]}>
-              <Link href="/Sono" style={styles.carouselLink}>
-                <Text style={styles.carouselTitle}>Sono</Text>
-                <Text style={styles.carouselPlaceholder}>Salvo por último</Text>
-              </Link>
-            </Pressable>
+            {[
+              { title: 'Fraldas', href: '/Fraudas' },
+              { title: 'Mamadeiras', href: '/Mamadeira' },
+              { title: 'Sono', href: '/Sono' },
+            ].map((item, index) => (
+              <Pressable
+                key={index}
+                style={({ pressed }) => [
+                  styles.carouselCard,
+                  cardShadow,
+                  pressed && styles.utilButtonPressed,
+                ]}
+              >
+                <Link href={item.href} asChild>
+                  <View style={styles.carouselLink}>
+                    <View style={styles.carouselTextBox}>
+                      <Text style={styles.carouselTitle}>{item.title}</Text>
+                      <Text style={styles.carouselPlaceholder}>Salvo por último</Text>
+                    </View>
+                  </View>
+                </Link>
+              </Pressable>
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -106,29 +132,24 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
     marginBottom: 28,
-    letterSpacing: 0.5,
   },
 
+  /* BOTÕES PRINCIPAIS */
   buttonContainer: {
-    marginTop: 20,
-    marginBottom: 20,
-    marginLeft: 20,
-    marginRight: 20,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignItems: 'flex-start',
     width: '100%',
+    marginBottom: 10,
   },
 
   mainButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: colors.surface,
     borderRadius: 20,
     paddingVertical: 16,
-    paddingHorizontal: 12,
-    minWidth: 95,
+    paddingHorizontal: 16,
+    minWidth: 90,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   mainButtonCenter: {
@@ -153,7 +174,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
   },
 
   iconCircleAccent: {
@@ -170,38 +190,30 @@ const styles = StyleSheet.create({
     height: 44,
   },
 
-  mainButtonLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.text,
-  },
-
+  /* CARROSSEL */
   utilidadesContainer: {
     width: '100%',
     marginTop: 16,
-    marginBottom: 8,
   },
 
   carouselContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
+    paddingHorizontal: (SCREEN_WIDTH - CARD_WIDTH) / 30,
   },
 
   carouselCard: {
-    width: 140,
+    width: 110,
+    height: 80,
     marginRight: 12,
     backgroundColor: colors.surface,
     borderRadius: 14,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   utilButtonPressed: {
     opacity: 0.9,
-    backgroundColor: colors.background,
   },
 
   carouselLink: {
@@ -209,7 +221,11 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 8,
+  },
+
+  carouselTextBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   carouselTitle: {
@@ -217,12 +233,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.text,
     textAlign: 'center',
-    marginBottom: 4,
   },
 
   carouselPlaceholder: {
     fontSize: 12,
     color: colors.textSecondary,
     textAlign: 'center',
+    marginTop: 4,
   },
 });
