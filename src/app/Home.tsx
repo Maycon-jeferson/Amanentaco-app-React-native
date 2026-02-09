@@ -47,47 +47,47 @@ export default function Home() {
 
         {/* BOTÕES PRINCIPAIS */}
         <View style={styles.buttonContainer}>
-          <Pressable style={({ pressed }) => [styles.mainButton, cardShadow, pressed && styles.mainButtonPressed]}>
-            <Link href="/Table" asChild>
+          <Link href="/Table" asChild>
+            <Pressable style={({ pressed }) => [styles.mainButton, cardShadow, pressed && styles.mainButtonPressed]}>
               <View style={styles.linkButton}>
                 <View style={styles.iconCircle}>
                   <Image source={require('../source/icons/table.png')} style={styles.mainIcon} />
                 </View>
               </View>
-            </Link>
-          </Pressable>
+            </Pressable>
+          </Link>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.mainButton,
-              cardShadow,
-              breastfeedingPressed && styles.mainButtonCenter,
-              pressed && styles.mainButtonPressed,
-            ]}
-            onPressIn={() => setBreastfeedingPressed(true)}
-            onPressOut={() => setBreastfeedingPressed(false)}
-          >
-            <Link href="/Breastfeeding" asChild>
+          <Link href="/Breastfeeding" asChild>
+            <Pressable
+              style={({ pressed }) => [
+                styles.mainButton,
+                cardShadow,
+                (pressed || breastfeedingPressed) && styles.mainButtonCenter,
+                pressed && styles.mainButtonPressed,
+              ]}
+              onPressIn={() => setBreastfeedingPressed(true)}
+              onPressOut={() => setBreastfeedingPressed(false)}
+            >
               <View style={styles.linkButton}>
-                <View style={[styles.iconCircle, breastfeedingPressed && styles.iconCircleAccent]}>
+                <View style={[styles.iconCircle, (breastfeedingPressed) && styles.iconCircleAccent]}>
                   <Image
                     source={require('../source/icons/breastfeeding.png')}
                     style={styles.centerIcon}
                   />
                 </View>
               </View>
-            </Link>
-          </Pressable>
+            </Pressable>
+          </Link>
 
-          <Pressable style={({ pressed }) => [styles.mainButton, cardShadow, pressed && styles.mainButtonPressed]}>
-            <Link href="/Baby" asChild>
+          <Link href="/Baby" asChild>
+            <Pressable style={({ pressed }) => [styles.mainButton, cardShadow, pressed && styles.mainButtonPressed]}>
               <View style={styles.linkButton}>
                 <View style={styles.iconCircle}>
                   <Image source={require('../source/icons/baby-line.png')} style={styles.mainIcon} />
                 </View>
               </View>
-            </Link>
-          </Pressable>
+            </Pressable>
+          </Link>
         </View>
 
         {/* CARROSSEL */}
@@ -175,8 +175,8 @@ const styles = StyleSheet.create({
   },
 
   iconCircle: {
-    width: 64,
-    height: 64,
+    width: 92,
+    height: 92,
     borderRadius: 32,
     backgroundColor: colors.primaryLight,
     alignItems: 'center',

@@ -8,15 +8,15 @@ export const colors = {
   surface: '#FFFFFF',
   surfaceElevated: '#FFFFFF',
 
-  // Primária (lavanda / lilás)
-  primary: '#8B7BA8',
-  primaryLight: '#B8A9C9',
-  primaryDark: '#6B5B82',
+  // Primária (lavanda / lilás com tom rosa)
+  primary: '#B87BA8',
+  primaryLight: '#E8C4DC',
+  primaryDark: '#8B5B82',
 
-  // Destaque (rosa suave)
-  accent: '#D4A5C8',
-  accentLight: '#E8D0E3',
-  accentDark: '#B87BA8',
+  // Destaque (rosa)
+  accent: '#E8A5C8',
+  accentLight: '#F5D8EB',
+  accentDark: '#D47BA8',
 
   // Texto
   text: '#2D2A35',
