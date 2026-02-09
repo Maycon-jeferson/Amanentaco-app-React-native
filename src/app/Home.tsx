@@ -13,7 +13,7 @@ import Agenda from '../components/Agenda';
 import { Link } from 'expo-router';
 import { colors } from '../theme';
 
-const CARD_WIDTH = 120;
+const CARD_WIDTH = 110;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const cardShadow = Platform.select({
@@ -28,6 +28,17 @@ const cardShadow = Platform.select({
 
 export default function Home() {
   const [breastfeedingPressed, setBreastfeedingPressed] = useState(false);
+
+  // Carrosel
+  const fraldasUltimoSalvo = 'Ultima frauda a 3h';
+  const mamadeirasUltimoSalvo = 'Ultima mamadeira a 4h';
+  const sonoUltimoSalvo = 'Ultimo sono a 8h';
+
+  const carouselItems = [
+    { title: 'Fraldas', href: '/Fraudas', ultimoSalvo: fraldasUltimoSalvo },
+    { title: 'Mamadeiras', href: '/Mamadeira', ultimoSalvo: mamadeirasUltimoSalvo },
+    { title: 'Sono', href: '/Sono', ultimoSalvo: sonoUltimoSalvo },
+  ];
 
   return (
     <>
@@ -86,11 +97,7 @@ export default function Home() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.carouselContent}
           >
-            {[
-              { title: 'Fraldas', href: '/Fraudas' },
-              { title: 'Mamadeiras', href: '/Mamadeira' },
-              { title: 'Sono', href: '/Sono' },
-            ].map((item, index) => (
+            {carouselItems.map((item, index) => (
               <Pressable
                 key={index}
                 style={({ pressed }) => [
@@ -103,7 +110,7 @@ export default function Home() {
                   <View style={styles.carouselLink}>
                     <View style={styles.carouselTextBox}>
                       <Text style={styles.carouselTitle}>{item.title}</Text>
-                      <Text style={styles.carouselPlaceholder}>Salvo por último</Text>
+                      <Text style={styles.carouselPlaceholder}>{item.ultimoSalvo || 'err'}</Text>
                     </View>
                   </View>
                 </Link>
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
   /* BOTÕES PRINCIPAIS */
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     width: '100%',
     marginBottom: 10,
   },
