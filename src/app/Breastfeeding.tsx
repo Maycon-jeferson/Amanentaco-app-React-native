@@ -83,9 +83,7 @@ export default function BreastFeeding() {
       const records = existingData ? JSON.parse(existingData) : [];
       records.push(breastfeedingRecord);
       await AsyncStorage.setItem('breastfeedingRecords', JSON.stringify(records));
-      
       setSavedTime(timerSeconds);
-      Alert.alert('Sucesso', `Mamada do seio ${breastfeedingRecord.lado} registrada!\nTempo: ${formatTime(timerSeconds)}`);
       closeModal();
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível salvar os dados');
@@ -123,14 +121,19 @@ export default function BreastFeeding() {
       <Modal visible={modalVisible} animationType="fade" transparent onRequestClose={closeModal}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, cardShadow]}>
-            <Text style={styles.modalTitle}>Seio {selectedSide === 'L' ? 'Esquerdo' : selectedSide === 'R' ? 'Direito' : ''}</Text>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Seio {selectedSide === 'L' ? 'Esquerdo' : selectedSide === 'R' ? 'Direito' : ''}</Text>
+              <Pressable onPress={closeModal} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>✕</Text>
+              </Pressable>
+            </View>
             
             {!timerStarted ? (
               <Pressable 
                 onPress={handleStartTimer}
                 style={({ pressed }) => [styles.playButtonLarge, pressed && { opacity: 0.8 }]}
               >
-                <Text style={styles.playButtonText}>▶</Text>
+                <Text style={styles.playButtonText}>Iniciar</Text>
               </Pressable>
             ) : (
               <>
@@ -309,9 +312,10 @@ const styles = StyleSheet.create({
 
   modalContent: {
     width: '100%',
-    maxWidth: 420,
-    paddingVertical: 20,
-    paddingHorizontal: 18,
+    maxWidth: 400,
+    maxHeight: '80%',
+    paddingVertical: 32,
+    paddingHorizontal: 24,
     backgroundColor: colors.surface,
     borderRadius: 12,
     alignItems: 'center',
@@ -321,22 +325,46 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: colors.text,
-    marginBottom: 20,
+    flex: 1,
   },
 
   playButtonLarge: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
     backgroundColor: colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 28,
   },
 
   playButtonText: {
-    fontSize: 64,
+    fontSize: 18,
+    fontWeight: '700',
     color: '#fff',
+  },
+
+  modalHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 28,
+  },
+
+  closeButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.accentLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  closeButtonText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.accent,
   },
 
   timerDisplay: {
@@ -348,7 +376,7 @@ const styles = StyleSheet.create({
     borderColor: colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 28,
   },
 
   timerText: {
