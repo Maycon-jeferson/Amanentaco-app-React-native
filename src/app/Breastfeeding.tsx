@@ -1,5 +1,6 @@
-import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, Pressable, StyleSheet, Platform, Modal, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from 'react';
 import Timer from '../components/Timer';
 import CountdownTimer from '../components/CountdownTimer';
 import { colors } from '../theme';
@@ -16,6 +17,81 @@ const cardShadow = Platform.select({
 
 export default function BreastFeeding() {
   const [savedTime, setSavedTime] = useState<number | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedSide, setSelectedSide] = useState<'L' | 'R' | null>(null);
+  const [timerSeconds, setTimerSeconds] = useState<number>(0);
+  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
+  const [timerStarted, setTimerStarted] = useState<boolean>(false);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (isTimerRunning) {
+      interval = setInterval(() => {
+        setTimerSeconds(prev => prev + 1);
+      }, 1000);
+    }
+    
+    return () => clearInterval(interval);
+  }, [isTimerRunning]);
+
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const openModal = (side: 'L' | 'R') => {
+    setSelectedSide(side);
+    setTimerSeconds(0);
+    setIsTimerRunning(false);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedSide(null);
+    setTimerSeconds(0);
+    setIsTimerRunning(false);
+    setTimerStarted(false);
+  };
+
+  const handleStartTimer = () => {
+    setTimerStarted(true);
+    setIsTimerRunning(true);
+  };
+
+  const handleTogglePause = () => {
+    setIsTimerRunning(!isTimerRunning);
+  };
+
+  const saveBreastfeedingData = async () => {
+    if (selectedSide === null) return;
+
+    const now = new Date();
+    const breastfeedingRecord = {
+      id: Date.now(),
+      lado: selectedSide === 'L' ? 'Esquerdo' : 'Direito',
+      tempo: timerSeconds,
+      hora: now.toLocaleTimeString('pt-BR'),
+      data: now.toLocaleDateString('pt-BR'),
+      dataCompleta: now.toISOString(),
+    };
+
+    try {
+      const existingData = await AsyncStorage.getItem('breastfeedingRecords');
+      const records = existingData ? JSON.parse(existingData) : [];
+      records.push(breastfeedingRecord);
+      await AsyncStorage.setItem('breastfeedingRecords', JSON.stringify(records));
+      
+      setSavedTime(timerSeconds);
+      Alert.alert('Sucesso', `Mamada do seio ${breastfeedingRecord.lado} registrada!\nTempo: ${formatTime(timerSeconds)}`);
+      closeModal();
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível salvar os dados');
+      console.error(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -27,34 +103,74 @@ export default function BreastFeeding() {
         </View>
       </View>
 
+      {/* botoes para selecionar o seio esquerdo ou direito */}
+
       <Text style={styles.sectionLabel}>Selecione o seio</Text>
       <View style={styles.lrDirection}>
-        <Pressable style={({ pressed }) => [styles.lrBlock, cardShadow, pressed && styles.lrBlockPressed]}>
+        <Pressable onPress={() => openModal('L')} style={({ pressed }) => [styles.lrBlock, cardShadow, pressed && styles.lrBlockPressed]}>
           <Text style={styles.lrText}>L</Text>
           <Text style={styles.lrSubtext}>Esquerdo</Text>
         </Pressable>
 
-        <Pressable style={({ pressed }) => [styles.lrBlock, cardShadow, pressed && styles.lrBlockPressed]}>
+        <Pressable onPress={() => openModal('R')} style={({ pressed }) => [styles.lrBlock, cardShadow, pressed && styles.lrBlockPressed]}>
           <Text style={styles.lrText}>R</Text>
           <Text style={styles.lrSubtext}>Direito</Text>
         </Pressable>
       </View>
 
-      <View style={[styles.timerSection, cardShadow]}>
+      {/* modal para mostrar o seio selecionado */}
+
+      <Modal visible={modalVisible} animationType="fade" transparent onRequestClose={closeModal}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, cardShadow]}>
+            <Text style={styles.modalTitle}>Seio {selectedSide === 'L' ? 'Esquerdo' : selectedSide === 'R' ? 'Direito' : ''}</Text>
+            
+            {!timerStarted ? (
+              <Pressable 
+                onPress={handleStartTimer}
+                style={({ pressed }) => [styles.playButtonLarge, pressed && { opacity: 0.8 }]}
+              >
+                <Text style={styles.playButtonText}>▶</Text>
+              </Pressable>
+            ) : (
+              <>
+                <Pressable 
+                  onPress={handleTogglePause}
+                  style={styles.timerDisplay}
+                >
+                  <Text style={styles.timerText}>{formatTime(timerSeconds)}</Text>
+                  <Text style={styles.timerSubtext}>
+                    {isTimerRunning ? 'Toque para pausar' : 'Toque para retomar'}
+                  </Text>
+                </Pressable>
+
+                <Pressable 
+                  onPress={saveBreastfeedingData}
+                  style={({ pressed }) => [styles.finalizeButton, pressed && { opacity: 0.8 }]}
+                >
+                  <Text style={styles.finalizeButtonText}>Finalizar</Text>
+                </Pressable>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* <View style={[styles.timerSection, cardShadow]}>
         <Timer onSaveTime={setSavedTime} />
-      </View>
+      </View> */}
 
       <View style={[styles.areaCard, cardShadow]}>
         <Text style={styles.areaLabel}>Tempo da última mamada</Text>
         <Text style={styles.areaValue}>
-          {savedTime !== null ? `${savedTime}s` : '—'}
+          {savedTime !== null ? formatTime(savedTime) : '—'}
         </Text>
       </View>
 
-      <View style={[styles.areaCard, cardShadow]}>
+      {/* <View style={[styles.areaCard, cardShadow]}>
         <Text style={styles.areaLabel}>Próxima mamada em</Text>
         <CountdownTimer />
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -119,7 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 20,
     gap: 12,
-    height: 140,
+    height: 240,
   },
 
   lrBlock: {
@@ -182,5 +298,84 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: colors.text,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+
+  modalContent: {
+    width: '100%',
+    maxWidth: 420,
+    paddingVertical: 20,
+    paddingHorizontal: 18,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 20,
+  },
+
+  playButtonLarge: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+
+  playButtonText: {
+    fontSize: 64,
+    color: '#fff',
+  },
+
+  timerDisplay: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: colors.accentLight,
+    borderWidth: 3,
+    borderColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+
+  timerText: {
+    fontSize: 48,
+    fontWeight: '800',
+    color: colors.primaryDark,
+  },
+
+  timerSubtext: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 8,
+  },
+
+  finalizeButton: {
+    width: '100%',
+    paddingVertical: 12,
+    backgroundColor: colors.accent,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+
+  finalizeButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
   },
 });
